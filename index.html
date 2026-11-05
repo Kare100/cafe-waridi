@@ -1,0 +1,459 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="description" content="A cinematic scroll-through website concept for Café Waridi, a fictional pink coffee house in Nairobi.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='15' fill='%23d81e6c'/%3E%3Ccircle cx='16' cy='16' r='6' fill='%23fff5ec'/%3E%3C/svg%3E">
+<title>Café Waridi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caprasimo&family=Gochi+Hand&family=Nunito:wght@500;700;800&display=swap">
+<style>
+/* Layout: one fixed photo stage. Scalloped cards scroll over it, and each photo sits on the side the card leaves free. */
+:root{
+  color-scheme:dark;
+  --night:#2c0d20;      /* the dark behind every photo */
+  --cream:#fff5ec;      /* milk foam, the card ground */
+  --blush:#ffd9e2;
+  --waridi:#d81e6c;     /* bougainvillea magenta */
+  --petal:#ff9cc4;      /* magenta lifted for use on dark */
+  --jacaranda:#6f4cb5;
+  --plum:#4a1233;       /* text on cream */
+  --plum-soft:#7c4a63;
+  --line:rgba(216,30,108,.28);
+  --display:"Caprasimo","Cooper Black",Georgia,serif;
+  --body:"Nunito","Trebuchet MS",Verdana,sans-serif;
+  --hand:"Gochi Hand","Comic Sans MS",cursive;
+  --gut:clamp(16px,4.5vw,72px);
+}
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth;background:var(--night)}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+body{background:var(--night);color:var(--cream);font:500 1.0625rem/1.6 var(--body);overflow-x:hidden}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--night)}
+#stage,#air{position:fixed;left:0;top:0;width:100%;height:100vh;height:100lvh;display:block;pointer-events:none}
+#stage{z-index:0;opacity:0;transition:opacity 1.1s ease}
+#stage.on{opacity:1}
+#air{z-index:1}
+body.no-gl #stage,body.no-gl #air{display:none}
+body.no-gl section{background-size:cover;background-position:center}
+main,footer{position:relative;z-index:2}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--petal);outline-offset:3px}
+
+.navwrap{position:fixed;z-index:5;left:0;right:0;top:0;padding-top:calc(12px + env(safe-area-inset-top,0px));
+  padding-left:max(var(--gut),env(safe-area-inset-left,0px));padding-right:max(var(--gut),env(safe-area-inset-right,0px));pointer-events:none}
+.nav{pointer-events:auto;display:flex;align-items:center;justify-content:space-between;gap:14px;background:var(--cream);color:var(--plum);border-radius:99px;padding:8px 10px 8px 22px;box-shadow:0 8px 26px rgba(44,13,32,.3)}
+.brand{font:400 1.3rem/1 var(--display);color:var(--waridi);text-decoration:none;white-space:nowrap}
+.nav nav{display:flex;gap:clamp(12px,2.2vw,30px)}
+.nav nav a{font-weight:700;font-size:.9375rem;text-decoration:none}
+.nav nav a:hover{color:var(--waridi)}
+.clock{display:flex;align-items:baseline;gap:7px;background:var(--blush);border-radius:99px;padding:6px 14px 7px;white-space:nowrap;font:400 1.0625rem/1 var(--hand)}
+.clock b{font-weight:400;color:var(--waridi)}
+
+.wrap{padding-left:max(var(--gut),env(safe-area-inset-left,0px));padding-right:max(var(--gut),env(safe-area-inset-right,0px))}
+h1,h2{font-family:var(--display);font-weight:400;text-wrap:balance;margin:0}
+h1{font-size:clamp(3.2rem,6.8vw,7rem);line-height:.98;color:var(--cream);text-shadow:0 2px 30px rgba(44,13,32,.55)}
+h1 em{font-style:normal;color:var(--petal)}
+h2{font-size:clamp(2.1rem,3.4vw,3.1rem);line-height:1.05;color:var(--waridi)}
+p{margin:0;max-width:60ch}
+.when{font:400 1.375rem/1.1 var(--hand);color:var(--jacaranda)}
+.hero .when{color:var(--blush)}
+
+.card{position:relative;background:var(--cream);color:var(--plum);border-radius:0 0 30px 30px;padding:clamp(22px,2.4vw,34px);display:flex;flex-direction:column;gap:14px;min-width:0;width:min(470px,36vw);box-shadow:0 26px 60px rgba(44,13,32,.42)}
+.card::before{content:"";position:absolute;left:0;right:0;bottom:calc(100% - 1px);height:15px;background:radial-gradient(circle at 15px 15px,var(--cream) 14.5px,transparent 15px) 0 0/30px 15px round}
+.left{margin-right:auto}.right{margin-left:auto}
+
+.hero{min-height:100svh;display:flex;flex-direction:column;justify-content:center;padding-top:110px;padding-bottom:48px}
+.hero-text{display:flex;flex-direction:column;gap:20px;max-width:min(620px,42vw)}
+.hero-text p{font-size:1.1875rem;font-weight:700;max-width:38ch;text-shadow:0 1px 14px rgba(44,13,32,.8)}
+.cta{display:flex;gap:12px;flex-wrap:wrap}
+.btn{display:inline-block;font:800 1rem/1 var(--body);padding:16px 26px;border-radius:99px;text-decoration:none;border:2.5px solid var(--cream);background:rgba(44,13,32,.3);color:var(--cream);transition:transform .18s ease,background .18s}
+.btn.solid{background:var(--waridi);border-color:var(--waridi);color:#fff}
+.btn:hover{transform:translateY(-2px) rotate(-1deg)}
+@media (prefers-reduced-motion:reduce){.btn:hover{transform:none}}
+
+section{scroll-margin-top:90px}
+.beat{padding-block:62vh 0}
+#visit{padding-bottom:30vh}
+
+ul.menu{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
+ul.menu li{display:grid;grid-template-columns:1fr auto;gap:0 14px;padding:10px 0;border-top:2px dotted var(--line)}
+ul.menu b{font-weight:800}
+.d{grid-column:1/-1;font-size:.9375rem;line-height:1.4;color:var(--plum-soft)}
+.p{font-weight:800;color:var(--waridi);font-variant-numeric:tabular-nums;white-space:nowrap}
+
+.drinks{display:flex;flex-wrap:wrap;gap:8px}
+.drink{font:800 .9375rem/1 var(--body);padding:11px 15px;border-radius:99px;border:2.5px solid var(--blush);background:#fff;color:var(--plum);cursor:pointer;transition:background .18s,border-color .18s}
+.drink:hover{border-color:var(--waridi)}
+.drink[aria-pressed="true"]{background:var(--waridi);border-color:var(--waridi);color:#fff}
+.chosen{background:var(--blush);border-radius:20px;padding:14px 18px;display:grid;grid-template-columns:1fr auto;gap:2px 14px}
+.chosen b{font-weight:800}
+.chosen .d{color:var(--plum);line-height:1.45}
+
+.facts{display:grid;grid-template-columns:auto 1fr;gap:6px 18px;margin:0}
+.facts dt{font:400 1.1875rem/1.45 var(--hand);color:var(--jacaranda)}
+.facts dd{margin:0;font-weight:700;min-width:0}
+
+/* closing band: a kanga's border and its saying, the jina */
+.kanga{background:var(--waridi);color:var(--cream);padding-block:44px;text-align:center;display:flex;flex-direction:column;gap:6px;align-items:center;
+  background-image:radial-gradient(circle,var(--cream) 5px,transparent 5.5px),radial-gradient(circle,var(--cream) 5px,transparent 5.5px);background-size:30px 18px,30px 18px;background-position:0 6px,0 calc(100% - 6px);background-repeat:repeat-x}
+.saying{font:400 clamp(1.8rem,4vw,3.2rem)/1.1 var(--display);text-wrap:balance}
+.kanga span{font-weight:700}
+.notes{background:var(--night);padding-block:26px calc(26px + env(safe-area-inset-bottom,0px));font-size:.875rem;color:var(--blush)}
+.notes p{max-width:80ch}
+
+@media (max-width:860px),(max-aspect-ratio:1/1){
+  .nav nav{display:none}
+  .nav{padding-left:18px;padding-right:7px;padding-block:7px}
+  .clock{font-size:.9375rem;padding-inline:11px}
+  .hero{justify-content:flex-end;padding-top:46svh;padding-bottom:30px;background:linear-gradient(rgba(44,13,32,0) 30%,rgba(44,13,32,.82) 60%)}
+  .hero-text{max-width:100%}
+  h1{font-size:clamp(2.9rem,14vw,5rem)}
+  .hero-text p{font-size:1.0625rem}
+  .card{width:100%}
+  .beat{padding-block:82svh 0}
+  #visit{padding-bottom:12svh}
+}
+</style>
+</head>
+<body>
+<canvas id="stage" aria-hidden="true"></canvas>
+<canvas id="air" aria-hidden="true"></canvas>
+
+<div class="navwrap">
+  <header class="nav">
+    <a class="brand" href="#top">Café Waridi</a>
+    <nav aria-label="Sections">
+      <a href="#morning">Morning</a>
+      <a href="#coffee">Coffee</a>
+      <a href="#afternoon">Afternoon</a>
+      <a href="#evening">Evening</a>
+      <a href="#visit">Visit</a>
+    </nav>
+    <span class="clock"><b id="clockWord">asubuhi</b><span id="clockTime">7:00 am</span></span>
+  </header>
+</div>
+
+<main id="top">
+  <section class="hero wrap" data-stop="hero" data-photo="waridi-hero">
+    <div class="hero-text">
+      <span class="when">karibu, babe</span>
+      <h1>Soft life starts at <em>7am.</em></h1>
+      <p>A little coffee house wrapped in bougainvillea in Kilimani, Nairobi. Scroll through one day with us, from first chai to fairy lights.</p>
+      <div class="cta">
+        <a class="btn solid" href="#morning">Start the day</a>
+        <a class="btn" href="#visit">Find us</a>
+      </div>
+    </div>
+  </section>
+
+  <section id="morning" class="beat wrap" data-photo="waridi-table">
+    <div class="card right" data-stop="morning">
+      <span class="when">8:30 am, asubuhi</span>
+      <h2>Chai and something warm</h2>
+      <p>Take the table by the window. We bring the chai first and ask questions later.</p>
+      <ul class="menu">
+        <li><b>Chai ya tangawizi</b><span class="p">KSh 220</span><span class="d">Kenyan black tea boiled with milk and fresh ginger.</span></li>
+        <li><b>Mandazi, three</b><span class="p">KSh 150</span><span class="d">Fried this morning, with cardamom and coconut.</span></li>
+        <li><b>Mahamri na mbaazi</b><span class="p">KSh 380</span><span class="d">Swahili coast breakfast: puffy mahamri with pigeon peas in coconut.</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <section id="coffee" class="beat wrap" data-photo="waridi-latte">
+    <div class="card left" data-stop="coffee">
+      <span class="when">11:00 am, kahawa time</span>
+      <h2>Pick your cup</h2>
+      <p>Our beans are SL28 from small farms around Nyeri, grown high and tasting of blackcurrant. Tap a drink to read about it.</p>
+      <div class="drinks" id="drinks"></div>
+      <div class="chosen" aria-live="polite">
+        <b id="drinkName"></b><span class="p" id="drinkPrice"></span>
+        <span class="d" id="drinkDesc"></span>
+      </div>
+    </div>
+  </section>
+
+  <section id="afternoon" class="beat wrap" data-photo="waridi-interior">
+    <div class="card right" data-stop="afternoon">
+      <span class="when">2:00 pm, mchana</span>
+      <h2>Stay for the slow part</h2>
+      <p>Sink into a velvet chair with the laptop, the gossip or both. Nobody here will rush you. The Wi-Fi password is <b>polepole</b>.</p>
+      <ul class="menu">
+        <li><b>Rose cake slice</b><span class="p">KSh 420</span><span class="d">Vanilla sponge with rosewater buttercream.</span></li>
+        <li><b>Kaimati, a bowl</b><span class="p">KSh 250</span><span class="d">Little crisp dumplings in cardamom syrup.</span></li>
+        <li><b>Avo toast, Murang'a style</b><span class="p">KSh 550</span><span class="d">Kenyan hass on sourdough with kachumbari.</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <section id="evening" class="beat wrap" data-photo="waridi-evening">
+    <div class="card right" data-stop="evening">
+      <span class="when">6:45 pm, jioni</span>
+      <h2>Fairy lights are the main event</h2>
+      <p>The sun drops behind the Ngong Hills, the garden lights come on and everyone takes the same photo. We switch to cold drinks.</p>
+      <ul class="menu">
+        <li><b>Rosella iced tea</b><span class="p">KSh 300</span><span class="d">Hibiscus, lime and a little honey. Very pink.</span></li>
+        <li><b>Passion and mint fizz</b><span class="p">KSh 350</span><span class="d">Fresh passion fruit with soda, no alcohol.</span></li>
+        <li><b>Viazi karai box</b><span class="p">KSh 350</span><span class="d">Crisp spiced potatoes with tamarind sauce, for sharing.</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <section id="visit" class="beat wrap" data-photo="waridi-evening">
+    <div class="card left" data-stop="visit">
+      <span class="when">7:30 pm, last orders</span>
+      <h2>Come through</h2>
+      <p>No bookings. Walk in, say hi and take any seat with a free cushion.</p>
+      <dl class="facts">
+        <dt>Where</dt><dd>Kilimani, Nairobi. Look for the bougainvillea.</dd>
+        <dt>Hours</dt><dd>Monday to Saturday 7am to 8pm. Sunday 8am to 6pm.</dd>
+        <dt>Pay</dt><dd>M-Pesa or card.</dd>
+        <dt>Bring</dt><dd>Your girls, your book, your dog.</dd>
+      </dl>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="kanga wrap">
+    <p class="saying">Haraka haraka haina baraka.</p>
+    <span>Hurry, hurry has no blessing.</span>
+  </div>
+  <div class="notes wrap">
+    <p>Café Waridi is a fictional café, made as a design concept, so its menu, prices and details are invented. The photos are stock images from other places, with signs retouched out and not of any Kenyan venue. Photos from Pexels by Necip Duman, Michael Takahashi, Valeria Boltneva, Taryn Elliott and Bala.</p>
+  </div>
+</footer>
+
+<script>
+(function(){
+'use strict';
+const $=id=>document.getElementById(id);
+const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* ---------- Drinks ---------- */
+const DRINKS=[
+ {key:'rose',name:'Waridi latte',price:'KSh 450',desc:'Our Nyeri espresso with milk and syrup made from Naivasha roses. The one you came for.'},
+ {key:'aa',name:'Nyeri flat white',price:'KSh 380',desc:'A double shot and silky milk. Bright, a little berry, no sugar needed.'},
+ {key:'chai',name:'Masala chai',price:'KSh 250',desc:'Kericho tea simmered with ginger, cardamom, cinnamon and cloves.'},
+ {key:'dawa',name:'Dawa',price:'KSh 300',desc:'Dawa means medicine. Hot lemon, ginger and honey, for the heartbreak or the flu.'}
+];
+function chooseDrink(d){
+  document.querySelectorAll('.drink').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.k===d.key)));
+  $('drinkName').textContent=d.name;$('drinkPrice').textContent=d.price;$('drinkDesc').textContent=d.desc;
+}
+DRINKS.forEach(d=>{const b=document.createElement('button');b.type='button';b.className='drink';b.textContent=d.name;b.dataset.k=d.key;b.addEventListener('click',()=>chooseDrink(d));$('drinks').appendChild(b);});
+chooseDrink(DRINKS[0]);
+
+/* ---------- Photos and their shots ----------
+   f: focal point in the photo. dy: how far the camera tilts over the shot. z: zoom.
+   depth: soft blobs [u,v,ru,rv,near] that make up the photo's depth map.
+   grade: gain, gamma, saturation, tint and shadow lift, all shared in one pink-warm family. */
+const PHOTOS={
+ 'waridi-hero':{src:'photos/waridi-hero.jpg',asp:1400/2100,f:[.5,.3],dy:.05,z:1.05,base:[.2,.45],
+   depth:[[.5,.36,.5,.36,1],[.12,.86,.2,.16,.75],[.86,.86,.2,.16,.75]]},
+ 'waridi-table':{src:'photos/waridi-table.jpg',asp:1900/1069,f:[.42,.58],dy:.03,z:1.06,base:[.05,.7],
+   depth:[[.37,.65,.26,.36,1],[.56,.42,.22,.2,.6],[.2,.2,.2,.2,.35]]},
+ 'waridi-latte':{src:'photos/waridi-latte.jpg',asp:1400/2099,f:[.5,.46],dy:.03,z:1.05,base:[.08,.3],
+   depth:[[.5,.48,.58,.36,1]]},
+ 'waridi-interior':{src:'photos/waridi-interior.jpg',asp:1400/2100,f:[.56,.62],dy:.08,z:1.05,base:[.1,.8],
+   depth:[[.1,.5,.2,.6,.95],[.82,.92,.34,.2,1],[.3,.92,.3,.2,1],[.55,.42,.16,.2,.15]]},
+ 'waridi-evening':{src:'photos/waridi-evening.jpg',asp:1400/1867,f:[.36,.56],dy:.05,z:1.05,base:[.1,.75],
+   depth:[[.37,.72,.12,.17,1],[.2,.55,.3,.22,.55],[.7,.65,.26,.18,.45]]}
+};
+const SHOTS={
+ hero:{photo:'waridi-hero',cx:.7,w:.62,h:7,gain:1.03,gam:1,sat:1.08,tint:[1.03,.98,.97],lift:[.035,.012,.02]},
+ morning:{photo:'waridi-table',cx:.5,w:1,h:8.5,gain:1.05,gam:.97,sat:1.04,tint:[1.03,.99,.97],lift:[.03,.012,.015]},
+ coffee:{photo:'waridi-latte',cx:.68,w:.64,h:11,gain:1.02,gam:1,sat:1.1,tint:[1.01,.99,1],lift:[.03,.008,.016]},
+ afternoon:{photo:'waridi-interior',cx:.32,w:.64,h:14,gain:1,gam:1,sat:1.06,tint:[1.01,.99,.99],lift:[.01,0,.006]},
+ evening:{photo:'waridi-evening',cx:.32,w:.64,h:18.75,gain:1.45,gam:.82,sat:1.16,tint:[1.06,.95,1],lift:[.016,.004,.024]},
+ visit:{photo:'waridi-evening',cx:.68,w:.64,h:19.5,gain:1.25,gam:.84,sat:1.14,tint:[1,.92,1.08],lift:[.018,.005,.034],zoomIn:.3}
+};
+
+/* no-WebGL fallback: every section just shows its photo */
+function fallback(){
+  document.body.classList.add('no-gl');
+  document.querySelectorAll('[data-photo]').forEach(s=>{s.style.backgroundImage='url('+PHOTOS[s.dataset.photo].src+')';});
+}
+
+/* ---------- Clock ---------- */
+let lastClock='';
+function renderClock(h){
+  const q=Math.round(h*12)/12,H=Math.floor(q),m=Math.round((q-H)*60),s=(H%12||12)+':'+String(m).padStart(2,'0')+(H<12?' am':' pm');
+  if(s===lastClock)return;lastClock=s;$('clockTime').textContent=s;
+  $('clockWord').textContent=q<11.5?'asubuhi':q<16.5?'mchana':q<19?'jioni':'usiku';
+}
+
+const stage=$('stage');
+const gl=stage.getContext('webgl2',{antialias:false,alpha:false,powerPreference:'high-performance'});
+if(!gl){fallback();return;}
+
+const VS=`#version 300 es
+in vec2 p;out vec2 v;void main(){v=vec2(p.x*.5+.5,.5-p.y*.5);gl_Position=vec4(p,0.,1.);}`;
+const FS=`#version 300 es
+precision highp float;in vec2 v;out vec4 o;
+uniform sampler2D tA,tB,dA,dB;uniform vec2 res,par;uniform float mixT,up;
+uniform vec4 lA,lB;   /* asp, cx, w, zoom */
+uniform vec2 fA,fB;
+uniform float gain,gam,sat;uniform vec3 tint,lift;
+float h21(vec2 q){return fract(sin(dot(q,vec2(12.9898,78.233)))*43758.5453);}
+float vn(vec2 q){vec2 i=floor(q),f=fract(q);f=f*f*(3.-2.*f);return mix(mix(h21(i),h21(i+vec2(1,0)),f.x),mix(h21(i+vec2(0,1)),h21(i+vec2(1,1)),f.x),f.y);}
+vec2 fit(float ra,float asp,float z){vec2 s=ra>asp?vec2(1.,asp/ra):vec2(ra/asp,1.);return s/z;}
+vec3 shot(sampler2D t,sampler2D d,vec4 l,vec2 f){
+  float R=res.x/res.y,asp=l.x,cx=l.y,w=l.z,z=l.w;
+  vec2 s=fit(R*w,asp,z);
+  vec2 ff=clamp(f,s*.5,1.-s*.5);
+  vec2 uv=ff+vec2((v.x-cx)/w,v.y-.5+up)*s;
+  float de=texture(d,clamp(uv,0.,1.)).r;
+  vec3 c=texture(t,clamp(uv+par*(de-.45)*s,.001,.999)).rgb;
+  if(w>=.99&&up<.001)return c;
+  /* the free side: the same photo, heavily blurred and dimmed, so edges melt away */
+  vec2 s2=fit(R,asp,z*1.08);
+  vec2 ub=clamp(ff,s2*.5,1.-s2*.5)+(v-.5)*s2;
+  vec3 b=(textureLod(t,ub,6.).rgb+textureLod(t,ub+vec2(.01,-.01),5.).rgb)*.5*.62+vec3(.05,.012,.03);
+  float mk=w>=.99?1.:smoothstep(w*.5,w*.5-.1,abs(v.x-cx));
+  mk*=smoothstep(1.,.93,uv.y);
+  return mix(b,c,mk);
+}
+void main(){
+  vec3 a=shot(tA,dA,lA,fA);
+  vec3 c=a;
+  if(mixT>.001){
+    vec3 b=shot(tB,dB,lB,fB);
+    float n=vn(v*vec2(res.x/res.y,1.)*2.2)*.7+vn(v*vec2(res.x/res.y,1.)*5.)*.3;
+    c=mix(a,b,smoothstep(n-.38,n+.38,mixT*1.76-.38));
+  }
+  c=pow(max(c,0.),vec3(gam))*gain*tint+lift;
+  float l=dot(c,vec3(.3,.59,.11));c=mix(vec3(l),c,sat);
+  vec2 q=v-.5;c*=mix(vec3(1.),vec3(.74,.62,.72),smoothstep(.22,.8,dot(q,q)*1.9));
+  c+=(h21(v*res)-.5)*(2.5/255.);
+  o=vec4(c,1.);
+}`;
+function sh(type,src){const s=gl.createShader(type);gl.shaderSource(s,src);gl.compileShader(s);if(!gl.getShaderParameter(s,gl.COMPILE_STATUS))throw new Error(gl.getShaderInfoLog(s));return s;}
+let prog;
+try{prog=gl.createProgram();gl.attachShader(prog,sh(gl.VERTEX_SHADER,VS));gl.attachShader(prog,sh(gl.FRAGMENT_SHADER,FS));gl.linkProgram(prog);
+  if(!gl.getProgramParameter(prog,gl.LINK_STATUS))throw new Error(gl.getProgramInfoLog(prog));}
+catch(e){console.warn('Photo stage unavailable:',e);fallback();return;}
+gl.useProgram(prog);
+const buf=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,buf);gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,-1,3,-1,-1,3]),gl.STATIC_DRAW);
+const loc=gl.getAttribLocation(prog,'p');gl.enableVertexAttribArray(loc);gl.vertexAttribPointer(loc,2,gl.FLOAT,false,0,0);
+const U={};['tA','tB','dA','dB','res','par','mixT','up','lA','lB','fA','fB','gain','gam','sat','tint','lift'].forEach(n=>U[n]=gl.getUniformLocation(prog,n));
+gl.uniform1i(U.tA,0);gl.uniform1i(U.tB,1);gl.uniform1i(U.dA,2);gl.uniform1i(U.dB,3);
+
+/* depth maps painted from soft blobs; they stay low-res and blurry on purpose */
+function depthCanvas(ph){
+  const c=document.createElement('canvas');c.width=c.height=96;const x=c.getContext('2d');
+  const g=x.createLinearGradient(0,0,0,96),v=n=>Math.round(n*255);
+  g.addColorStop(0,'rgb('+v(ph.base[0])+','+v(ph.base[0])+','+v(ph.base[0])+')');g.addColorStop(1,'rgb('+v(ph.base[1])+','+v(ph.base[1])+','+v(ph.base[1])+')');
+  x.fillStyle=g;x.fillRect(0,0,96,96);
+  ph.depth.forEach(b=>{x.save();x.translate(b[0]*96,b[1]*96);x.scale(b[2]*96,b[3]*96);
+    const r=x.createRadialGradient(0,0,0,0,0,1),k=v(b[4]);r.addColorStop(0,'rgba('+k+','+k+','+k+',1)');r.addColorStop(.55,'rgba('+k+','+k+','+k+',.8)');r.addColorStop(1,'rgba('+k+','+k+','+k+',0)');
+    x.fillStyle=r;x.beginPath();x.arc(0,0,1,0,6.3);x.fill();x.restore();});
+  return c;
+}
+function upload(unit,src,mips){
+  const t=gl.createTexture();gl.activeTexture(gl.TEXTURE0+unit);gl.bindTexture(gl.TEXTURE_2D,t);
+  gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,gl.RGBA,gl.UNSIGNED_BYTE,src);
+  if(mips)gl.generateMipmap(gl.TEXTURE_2D);
+  gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,mips?gl.LINEAR_MIPMAP_LINEAR:gl.LINEAR);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.LINEAR);
+  gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_S,gl.CLAMP_TO_EDGE);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE);
+  return t;
+}
+Object.keys(PHOTOS).forEach(k=>{const ph=PHOTOS[k];ph.depthTex=upload(2,depthCanvas(ph),false);
+  const im=new Image();im.onload=()=>{ph.tex=upload(0,im,true);dirty=true;};im.onerror=()=>console.warn('Could not load',ph.src);im.src=ph.src;});
+
+/* ---------- Scroll stops ---------- */
+let stops=[],narrow=false,W=1,H=1,dpr=Math.min(devicePixelRatio||1,1.5),dirty=true;
+function size(){
+  W=stage.clientWidth||innerWidth;H=stage.clientHeight||innerHeight;
+  stage.width=Math.round(W*dpr);stage.height=Math.round(H*dpr);gl.viewport(0,0,stage.width,stage.height);
+  air.width=Math.round(W);air.height=Math.round(H);dirty=true;
+}
+function layout(){
+  narrow=innerWidth<=860||innerWidth/innerHeight<=1;
+  const vh=innerHeight,maxS=document.documentElement.scrollHeight-vh;
+  stops=[...document.querySelectorAll('[data-stop]')].map(el=>{
+    const n=el.dataset.stop,r=el.getBoundingClientRect(),top=r.top+scrollY;
+    let y=n==='hero'?0:(narrow?top-vh*.62:(r.height>vh-90?top-84:top+r.height/2-vh/2));
+    return {n,y:Math.min(Math.max(0,y),maxS),c:SHOTS[n]};
+  });dirty=true;
+}
+const air=$('air'),ax=air.getContext('2d');
+let lastW=0,lastH=0;
+function onResize(){const w=innerWidth,h=innerHeight;if(w!==lastW||Math.abs(h-lastH)>140){lastW=w;lastH=h;size();}layout();}
+addEventListener('resize',onResize);
+if(window.ResizeObserver)new ResizeObserver(layout).observe(document.body);
+if(document.fonts&&document.fonts.ready)document.fonts.ready.then(layout);
+onResize();
+
+const pointer={x:0,y:0,sx:0,sy:0};
+if(!reduce)addEventListener('pointermove',e=>{if(e.pointerType==='touch')return;pointer.x=e.clientX/innerWidth*2-1;pointer.y=e.clientY/innerHeight*2-1;},{passive:true});
+
+/* drifting petals by day, soft string-light glow after dark */
+const petals=[];const pn=reduce?0:(innerWidth<700?16:34);
+for(let i=0;i<pn;i++)petals.push({x:Math.random(),y:Math.random(),s:.6+Math.random()*.9,p:Math.random()*6.3,r:Math.random()*6.3});
+const glows=[];for(let i=0;i<26;i++)glows.push({x:Math.random(),y:Math.random()*.62,s:6+Math.random()*20,p:Math.random()*6.3});
+function drawAir(t,dt,hour){
+  ax.clearRect(0,0,air.width,air.height);if(reduce)return;
+  const day=Math.max(0,Math.min(1,(17-hour)/2)),night=Math.max(0,Math.min(1,(hour-16.5)/2));
+  const ps=narrow?3:4.5;
+  if(day>0){ax.globalAlpha=(narrow?.6:.85)*day;ax.fillStyle='#e83d86';
+    petals.forEach(q=>{q.y+=dt*.035*q.s;if(q.y>1.05){q.y=-.05;q.x=Math.random();}
+      const X=(q.x+Math.sin(t*.5+q.p)*.03)*air.width,Y=q.y*air.height;
+      ax.save();ax.translate(X,Y);ax.rotate(t*.7*q.s+q.r);ax.scale(1,.45+.35*Math.sin(t*1.3+q.p));ax.beginPath();ax.arc(0,0,ps*q.s,0,6.3);ax.fill();ax.restore();});}
+  if(night>0){ax.globalCompositeOperation='lighter';
+    glows.forEach(g=>{const a=night*(.1+.08*Math.sin(t*.8+g.p)),X=g.x*air.width,Y=g.y*air.height,r=ax.createRadialGradient(X,Y,0,X,Y,g.s);
+      r.addColorStop(0,'rgba(255,205,140,'+a+')');r.addColorStop(1,'rgba(255,170,120,0)');ax.fillStyle=r;ax.fillRect(X-g.s,Y-g.s,g.s*2,g.s*2);});
+    ax.globalCompositeOperation='source-over';}
+  ax.globalAlpha=1;
+}
+
+let smooth=scrollY,prev=performance.now(),t0=0,time=0,acc=0,cnt=0,lastSig='';
+const lerp=(a,b,t)=>a+(b-a)*t,lerp3=(a,b,t)=>[lerp(a[0],b[0],t),lerp(a[1],b[1],t),lerp(a[2],b[2],t)];
+const blank=upload(0,(()=>{const c=document.createElement('canvas');c.width=c.height=2;c.getContext('2d').fillStyle='#2c0d20';c.getContext('2d').fillRect(0,0,2,2);return c;})(),true);
+function bind(unit,tex){gl.activeTexture(gl.TEXTURE0+unit);gl.bindTexture(gl.TEXTURE_2D,tex);}
+function layer(c,local,extra){
+  const ph=PHOTOS[c.photo],w=narrow?1:c.w,cx=narrow?.5:c.cx,z=ph.z*(1+.09*local+extra+(c.zoomIn||0)*.5);
+  return {ph,l:[ph.asp,cx,w,Math.max(1.02,z)],f:[ph.f[0],ph.f[1]+ph.dy*local+(narrow?.07:0)]};
+}
+function frame(now){
+  requestAnimationFrame(frame);
+  const dt=Math.min(.1,(now-prev)/1000);prev=now;time+=dt;if(!t0)t0=now;
+  smooth+=(scrollY-smooth)*(reduce?1:1-Math.exp(-dt*5));
+  let i=0,q=0;
+  for(let k=0;k<stops.length-1;k++){if(smooth>=stops[k].y){i=k;const a=stops[k],b=stops[k+1];q=b.y>a.y?Math.min(1,(smooth-a.y)/(b.y-a.y)):1;}}
+  const A=stops[i].c,B=stops[Math.min(i+1,stops.length-1)].c;
+  const tr=q<.3?0:q>.72?1:((x)=>x*x*(3-2*x))((q-.3)/.42);
+  const eased=q*q*(3-2*q);
+  const hour=lerp(A.h,B.h,eased);renderClock(hour);
+
+  pointer.sx+=(pointer.x-pointer.sx)*(1-Math.exp(-dt*3));pointer.sy+=(pointer.y-pointer.sy)*(1-Math.exp(-dt*3));
+  const intro=reduce?1:1-Math.pow(1-Math.min(1,(now-t0)/2600),3);
+  /* push into the outgoing photo, and settle into the incoming one */
+  const a=layer(A,q,tr*tr*.34+(1-intro)*.14),same=A.photo===B.photo,b=layer(B,q-1,(1-tr)*.16);
+  const par=[pointer.sx*.035+(q-.5)*.02,pointer.sy*.022+(q-.5)*.012];
+
+  const g={gain:lerp(A.gain,B.gain,eased),gam:lerp(A.gam,B.gam,eased),sat:lerp(A.sat,B.sat,eased)},tint=lerp3(A.tint,B.tint,eased),lift=lerp3(A.lift,B.lift,eased);
+  drawAir(time,dt,hour);
+
+  const sig=[smooth.toFixed(1),par[0].toFixed(4),par[1].toFixed(4),intro.toFixed(3),narrow,!!a.ph.tex,!!b.ph.tex].join('|');
+  if(sig===lastSig&&!dirty)return;lastSig=sig;dirty=false;
+
+  bind(0,a.ph.tex||blank);bind(1,b.ph.tex||blank);bind(2,a.ph.depthTex);bind(3,b.ph.depthTex);
+  gl.uniform2f(U.res,stage.width,stage.height);gl.uniform2f(U.par,par[0],par[1]);gl.uniform1f(U.up,narrow?.2:0);
+  /* same photo on both sides of a stop: slide across instead of dissolving */
+  if(same){const l=[a.l[0],lerp(a.l[1],b.l[1],eased),a.l[2],lerp(a.l[3],b.l[3],eased)],f=[a.f[0],lerp(a.f[1],b.f[1],eased)];
+    gl.uniform1f(U.mixT,0);gl.uniform4fv(U.lA,l);gl.uniform2fv(U.fA,f);gl.uniform4fv(U.lB,l);gl.uniform2fv(U.fB,f);}
+  else{gl.uniform1f(U.mixT,tr);gl.uniform4fv(U.lA,a.l);gl.uniform4fv(U.lB,b.l);gl.uniform2fv(U.fA,a.f);gl.uniform2fv(U.fB,b.f);}
+  gl.uniform1f(U.gain,g.gain);gl.uniform1f(U.gam,g.gam);gl.uniform1f(U.sat,g.sat);gl.uniform3fv(U.tint,tint);gl.uniform3fv(U.lift,lift);
+  gl.drawArrays(gl.TRIANGLES,0,3);
+  if(a.ph.tex&&!stage.classList.contains('on'))stage.classList.add('on');
+
+  acc+=dt;cnt++;if(cnt>=50){const av=acc/cnt;acc=0;cnt=0;if(av>.034&&dpr>.75){dpr=Math.max(.75,dpr*.85);size();}}
+}
+requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>
