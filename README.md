@@ -2,6 +2,8 @@
 
 A cinematic, scroll-driven website concept for a cute pink coffee house in Nairobi. *Waridi* is Swahili for rose.
 
+**[See it live](https://kare100.github.io/cafe-waridi/)**
+
 Scrolling walks you through one day at the café, from 7am chai to fairy lights at dusk. A clock in the nav runs as you go, and the photos push in, tilt and dissolve into each other.
 
 > **This is a design concept.** Café Waridi is fictional, so its menu, prices, hours and location are invented. The photos are stock images taken elsewhere, not of a Kenyan venue.
